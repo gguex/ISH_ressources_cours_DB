@@ -5,7 +5,9 @@ import pandas as pd
 parser = argparse.ArgumentParser(description='Unpivot CSV file')
 parser.add_argument('-i', '--input', help='Input CSV file', required=True)
 parser.add_argument('-f', '--fixed', help='Fixed column')
-parser.add_argument('-v', '--values', help='Should keep values', 
+parser.add_argument('-b', '--binary', help='Binary values, keep only ones', 
+                    action='store_true')
+parser.add_argument('-r', '--remove', help='Remove zero values', 
                     action='store_true')
 args = parser.parse_args()
 
@@ -18,15 +20,19 @@ if args.fixed is None:
 
 # Unpivot the columns
 unpivoted_df = pd.melt(df, id_vars=args.fixed, var_name='modalities', 
-                       value_name='Value')
+                       value_name='values')
 
-# Select only ones and drop value if -v is false
-if not parser.values:
-    unpivoted_df = unpivoted_df[unpivoted_df['Value'] == 1].drop(columns=['Value'])
-    
+# Select only ones and drop value if -b is true
+if args.binary:
+    unpivoted_df = \
+        unpivoted_df[unpivoted_df['values'] > 0].drop(columns=['values'])
+
+# Remove zero values
+if args.remove:
+    unpivoted_df = unpivoted_df[unpivoted_df['values'] > 0]
 
 # Sort it 
-unpivoted_df = unpivoted_df.sort_values(by=args.fixed)
+unpivoted_df = unpivoted_df.sort_values(by=[args.fixed, 'modalities'])
 
 # Save as CSV
 unpivoted_df.to_csv("unpivoted_" + args.input.split("/")[-1], index=False)
