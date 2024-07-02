@@ -5,6 +5,8 @@ import pandas as pd
 parser = argparse.ArgumentParser(description='Unpivot CSV file')
 parser.add_argument('-i', '--input', help='Input CSV file', required=True)
 parser.add_argument('-f', '--fixed', help='Fixed column')
+parser.add_argument('-v', '--values', help='Should keep values', 
+                    action='store_true')
 args = parser.parse_args()
 
 # Read the input CSV file
@@ -18,8 +20,10 @@ if args.fixed is None:
 unpivoted_df = pd.melt(df, id_vars=args.fixed, var_name='modalities', 
                        value_name='Value')
 
-# Select only ones and drop value
-unpivoted_df = unpivoted_df[unpivoted_df['Value'] == 1].drop(columns=['Value'])
+# Select only ones and drop value if -v is false
+if not parser.values:
+    unpivoted_df = unpivoted_df[unpivoted_df['Value'] == 1].drop(columns=['Value'])
+    
 
 # Sort it 
 unpivoted_df = unpivoted_df.sort_values(by=args.fixed)
