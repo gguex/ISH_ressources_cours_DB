@@ -4,7 +4,7 @@
 ### Logiciels 
 
 * Système de gestion de bases de données : **MariaDB** https://mariadb.org
-* Logiciel d'administration: **DBeaver** https://archive.ics.uci.edu/datasets
+* Logiciel d'administration: **DBeaver** https://dbeaver.io/download/
 * Langage de programmation : **Python** https://www.python.org/
 * Modélisation : **ERDplus** https://erdplus.com/
 * Éditeur : **Visual Studio Code** https://code.visualstudio.com/
